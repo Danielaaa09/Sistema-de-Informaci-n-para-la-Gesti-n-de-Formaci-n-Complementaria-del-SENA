@@ -1,16 +1,18 @@
-require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
 const app = express();
-const port = 3000;
+const cors = require('cors');
+require('dotenv').config();
 
+// middleware
 app.use(cors());
-app.use(express.json());
+app.use(express.json()); // necesario para leer el body
 
-app.get('/', (req, res) => {
-  res.send('API funcionando');
-});
+// importar rutas
+const authRoutes = require('./routes/auth');
+app.use('/api/auth', authRoutes); // ✅ esta línea activa /api/auth/login
 
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+// puerto
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
