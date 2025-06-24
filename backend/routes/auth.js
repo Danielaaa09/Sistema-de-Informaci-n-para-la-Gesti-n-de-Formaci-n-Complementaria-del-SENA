@@ -3,6 +3,6 @@ const router = express.Router();
 
 const { login } = require('../controllers/authController');
 
-router.post('/login', login); // ✅ esta línea define la ruta POST
+router.post('/login', login);
 
 module.exports = router;
