@@ -1,0 +1,22 @@
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production (Vite)
+dist/
+
+# env files
+.env
+.env.*.local
+
+# misc
+.DS_Store
+*.log
+
+# IDE settings
+.vscode/
+.idea/
