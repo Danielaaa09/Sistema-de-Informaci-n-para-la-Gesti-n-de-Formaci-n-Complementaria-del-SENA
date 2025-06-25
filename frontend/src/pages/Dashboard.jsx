@@ -79,6 +79,12 @@ const Dashboard = () => {
           >
             Ver historial
           </Link>
+          <Link
+            to="/Register"
+            className="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition"
+            >
+            Registrar usuario
+          </Link>
         </section>
       </main>
     </div>
