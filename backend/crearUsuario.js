@@ -1,23 +1,26 @@
-const bcrypt = require('bcrypt');
+require('dotenv').config(); 
 const { PrismaClient } = require('@prisma/client');
+const bcrypt = require('bcrypt');
+
 const prisma = new PrismaClient();
 
-async function crearUsuario() {
-  const contraseñaHash = await bcrypt.hash('123456', 10);
-  await prisma.usuario.create({
+async function main() {
+  const hashedPassword = await bcrypt.hash('12345', 10); 
+
+  const usuario = await prisma.usuario.create({
     data: {
-      nombre: 'Instructor Juan',
+      nombre_completo: 'Juan',
       correo: 'juan@sena.edu.co',
-      contraseña: contraseñaHash,
-      rol: 'INSTRUCTOR',
-    },
+      contrasena: hashedPassword,
+      id_rol: 2 
+    }
   });
 
-  console.log('✅ Usuario creado correctamente');
-  await prisma.$disconnect();
+  console.log('✅ Usuario creado:', usuario);
 }
 
-crearUsuario().catch((e) => {
-  console.error(e);
-  prisma.$disconnect();
-});
+main()
+  .catch((e) => console.error(e))
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -6,7 +6,7 @@ function Login() {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
-  const navigate = useNavigate(); // 👈 redirección
+  const navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,7 +18,7 @@ function Login() {
       });
       localStorage.setItem('token', res.data.token);
       setMensaje('✅ Redirigiendo...');
-      setTimeout(() => navigate('/dashboard'), 1000); // 👈 redirige a /dashboard
+      setTimeout(() => navigate('/Dashboard'), 1000); 
     } catch (error) {
       setMensaje('❌ ' + (error.response?.data?.message || 'Error al iniciar sesión'));
     }
