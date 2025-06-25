@@ -7,7 +7,6 @@ const Register = () => {
     id: "",
     nombre: "",
     correo: "",
-    contraseña: "",
     rol: "Coordinador" // valor por defecto
   });
 
@@ -16,11 +15,48 @@ const Register = () => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Datos registrados:", form);
-    // Aquí va la lógica para enviar los datos al backend
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('No estás autenticado.');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:3000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        nombre_completo: form.nombre,
+        correo: form.correo,
+        nombre_rol: form.rol
+      })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert(`✅ Usuario registrado correctamente.\nCorreo: ${data.usuario.correo}\nRol: ${data.usuario.rol}`);
+      setForm({
+        id: '',
+        nombre: '',
+        correo: '',
+        rol: 'Coordinador'
+      });
+    } else {
+      alert(`❌ Error: ${data.message || data.error}`);
+    }
+  } catch (error) {
+    alert('❌ Error al conectar con el servidor.');
+    console.error(error);
+  }
+};
+
 
   return (
     <div className="min-h-screen bg-white text-sena-gris font-sans">
@@ -72,17 +108,7 @@ const Register = () => {
             />
           </div>
 
-          <div>
-            <label className="block mb-1 font-medium">Contraseña</label>
-            <input
-              type="password"
-              name="contraseña"
-              value={form.contraseña}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sena-verde"
-            />
-          </div>
+          
 
           <div>
             <label className="block mb-1 font-medium">Rol</label>
