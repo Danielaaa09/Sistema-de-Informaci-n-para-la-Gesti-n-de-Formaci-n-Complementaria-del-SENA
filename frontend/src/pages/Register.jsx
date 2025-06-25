@@ -6,7 +6,7 @@ const Register = () => {
   const [form, setForm] = useState({
     nombre: "",
     correo: "",
-    rol: "Coordinador" // valor por defecto
+    rol: "Coordinador" 
   });
 
   const handleChange = (e) => {

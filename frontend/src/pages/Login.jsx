@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-
+import senaLogo from '../assets/sena-logo.png';
 function Login() {
   const [correo, setCorreo] = useState('');
   const [password, setPassword] = useState('');
   const [mensaje, setMensaje] = useState('');
   const navigate = useNavigate(); 
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { 
     e.preventDefault();
     setMensaje('');
     try {
