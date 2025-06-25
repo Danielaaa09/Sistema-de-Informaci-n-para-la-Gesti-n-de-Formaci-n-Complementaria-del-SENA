@@ -1,20 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
+import App from './App.jsx';
+import { BrowserRouter } from 'react-router-dom';
 
-// ✅ PWA
-import { registerSW } from 'virtual:pwa-register';
-registerSW();
-
-// ✅ Importar el contexto de autenticación
-import { AuthProvider } from './context/AuthContext';
-
-// ✅ Montar App envuelta en el AuthProvider
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <AuthProvider>
+    <BrowserRouter>
       <App />
-    </AuthProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
