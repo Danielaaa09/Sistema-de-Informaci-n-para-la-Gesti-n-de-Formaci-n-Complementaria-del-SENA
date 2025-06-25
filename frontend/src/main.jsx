@@ -3,13 +3,18 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
 
-// ✅ Registrar Service Worker fuera del render
+// ✅ PWA
 import { registerSW } from 'virtual:pwa-register';
 registerSW();
 
-// ✅ Montar la app normalmente
+// ✅ Importar el contexto de autenticación
+import { AuthProvider } from './context/AuthContext';
+
+// ✅ Montar App envuelta en el AuthProvider
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <App />
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </React.StrictMode>
 );

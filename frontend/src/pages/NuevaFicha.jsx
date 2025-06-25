@@ -5,14 +5,30 @@ import senaLogo from "../assets/sena-logo.png";
 const NuevaFicha = () => {
   const [codigo, setCodigo] = useState("");
   const [programa, setPrograma] = useState("");
+  const [modalidad, setModalidad] = useState("");
+  const [duracion, setDuracion] = useState("");
+  const [empresa, setEmpresa] = useState("");
   const [fecha, setFecha] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
   const [estado, setEstado] = useState("Activa");
+
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Aquí iría el fetch al backend
-    console.log({ codigo, programa, fecha, estado });
+    const datosFicha = {
+      codigo,
+      programa,
+      modalidad,
+      duracion,
+      empresa,
+      fecha,
+      fechaFin,
+      estado,
+    };
+
+    console.log("Datos enviados:", datosFicha);
     navigate("/dashboard");
   };
 
@@ -26,7 +42,10 @@ const NuevaFicha = () => {
       </header>
 
       <main className="max-w-xl mx-auto py-10 px-6">
-        <form onSubmit={handleSubmit} className="bg-white p-6 rounded-xl shadow-md border space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white p-6 rounded-xl shadow-md border space-y-4"
+        >
           <div>
             <label className="block mb-1 font-medium">Código de ficha</label>
             <input
@@ -50,11 +69,60 @@ const NuevaFicha = () => {
           </div>
 
           <div>
+            <label className="block mb-1 font-medium">Modalidad</label>
+            <select
+              value={modalidad}
+              onChange={(e) => setModalidad(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded outline-green-600"
+            >
+              <option value="">Selecciona</option>
+              <option value="Presencial">Presencial</option>
+              <option value="Virtual">Virtual</option>
+              <option value="Mixta">Mixta</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Duración (horas)</label>
+            <input
+              type="number"
+              min={1}
+              value={duracion}
+              onChange={(e) => setDuracion(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded outline-green-600"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Empresa / Centro</label>
+            <input
+              type="text"
+              value={empresa}
+              onChange={(e) => setEmpresa(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded outline-green-600"
+            />
+          </div>
+
+          <div>
             <label className="block mb-1 font-medium">Fecha de inicio</label>
             <input
               type="date"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
+              required
+              className="w-full px-4 py-2 border rounded outline-green-600"
+            />
+          </div>
+
+          <div>
+            <label className="block mb-1 font-medium">Fecha de finalización</label>
+            <input
+              type="date"
+              value={fechaFin}
+              onChange={(e) => setFechaFin(e.target.value)}
               required
               className="w-full px-4 py-2 border rounded outline-green-600"
             />
@@ -74,7 +142,7 @@ const NuevaFicha = () => {
 
           <button
             type="submit"
-            className="w-full bg-sena-verde text-white py-2 rounded hover:bg-green-800 transition"
+            className="w-full bg-green-700 text-white py-2 rounded hover:bg-green-800 transition"
           >
             Registrar ficha
           </button>

@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import NuevaFicha from "./pages/NuevaFicha";
 import Historial from './pages/Historial'
 
+
 function App() {
   return (
     <Router>
