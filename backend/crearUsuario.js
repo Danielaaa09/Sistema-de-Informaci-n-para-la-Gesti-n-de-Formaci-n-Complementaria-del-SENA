@@ -12,7 +12,7 @@ async function main() {
       nombre_completo: 'Juan',
       correo: 'juan@sena.edu.co',
       contrasena: hashedPassword,
-      id_rol: 2 
+      id_rol: 1
     }
   });
 
