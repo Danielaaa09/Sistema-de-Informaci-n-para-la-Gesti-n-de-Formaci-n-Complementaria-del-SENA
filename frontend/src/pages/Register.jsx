@@ -27,7 +27,7 @@ const Register = () => {
       <header className="bg-white border-b border-gray-200 shadow-sm py-4 px-6 flex items-center gap-4">
         <img src={senaLogo} alt="Logo SENA" className="h-12 w-auto" />
         <h1 className="text-2xl sm:text-3xl font-bold text-sena-verde">
-          Registro de Coordinador o Instructor
+          Registro de Coordinador e Instructor
         </h1>
       </header>
 

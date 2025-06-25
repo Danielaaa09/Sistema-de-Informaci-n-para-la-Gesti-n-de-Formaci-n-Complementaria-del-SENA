@@ -25,7 +25,7 @@ const Historial = () => {
             to="/dashboard"
             className="text-green-700 hover:text-green-900 font-semibold"
           >
-            ← Volver al dashboard
+            ← Volver al inicio
           </Link>
         </div>
 
