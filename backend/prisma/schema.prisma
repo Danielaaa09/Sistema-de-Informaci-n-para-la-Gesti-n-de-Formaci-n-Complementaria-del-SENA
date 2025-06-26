@@ -23,6 +23,7 @@ model Usuario {
   fichas          Ficha[]
   historial       HistorialFicha[] @relation("UsuarioHistorial")
   fecha_creacion  DateTime         @default(now())
+  cambiar_contrasena  Boolean   @default(true)
 }
 
 model ProgramaFormacion {
