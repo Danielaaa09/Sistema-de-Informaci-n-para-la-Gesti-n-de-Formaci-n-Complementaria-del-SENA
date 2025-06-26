@@ -1,17 +1,48 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import senaLogo from "../assets/sena-logo.png"
+import React from "react";
+import { Link } from "react-router-dom";
+import senaLogo from "../assets/sena-logo.png";
 
 const fichasMock = [
   { programa: "Electricidad", codigo: "456789", fecha: "17 de junio de 2025", estado: "Activa" },
   { programa: "Contabilidad", codigo: "789012", fecha: "10 de junio de 2025", estado: "Cerrada" },
   { programa: "ADSO", codigo: "123456", fecha: "1 de junio de 2025", estado: "Activa" }
-]
+];
 
 const Dashboard = () => {
-  const totalFichas = fichasMock.length
-  const programas = [...new Set(fichasMock.map(f => f.programa))]
-  const ultimasFichas = [...fichasMock].slice(-3).reverse()
+  const totalFichas = fichasMock.length;
+  const programas = [...new Set(fichasMock.map(f => f.programa))];
+  const ultimasFichas = [...fichasMock].slice(-3).reverse();
+
+  const generarPDF = async () => {
+    try {
+      const token = localStorage.getItem('token'); // Solo si usas JWT
+
+      const response = await fetch('http://localhost:3000/api/informes/pdf', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}` // Elimina esta línea si no usas JWT
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al generar el PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'informe.pdf';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+      alert('Hubo un problema al generar el PDF');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
@@ -82,13 +113,20 @@ const Dashboard = () => {
           <Link
             to="/Register"
             className="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition"
-            >
+          >
             Registrar usuario
           </Link>
+
+          <button
+            onClick={generarPDF}
+            className="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 transition"
+          >
+            Descargar informe PDF
+          </button>
         </section>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;

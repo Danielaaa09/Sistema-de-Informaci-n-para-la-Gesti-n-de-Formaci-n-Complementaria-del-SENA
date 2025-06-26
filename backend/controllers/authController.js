@@ -62,7 +62,7 @@ const register = async (req, res) => {
     const existingUser = await prisma.usuario.findUnique({ where: { correo } });
     if (existingUser) return res.status(400).json({ message: 'Correo ya registrado' });
 
-    const defaultPassword = '12345';
+    const defaultPassword = 'wxy58uioaweog';
     const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 
     const usuario = await prisma.usuario.create({
