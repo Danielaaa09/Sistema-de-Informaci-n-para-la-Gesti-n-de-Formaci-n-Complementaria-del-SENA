@@ -5,9 +5,17 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 
-// Configuración del correo
+function generarContrasenaAleatoria(length = 10) {
+  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*';
+  let contrasena = '';
+  for (let i = 0; i < length; i++) {
+    contrasena += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+  }
+  return contrasena;
+}
+
 const transporter = nodemailer.createTransport({
-  service: 'gmail', // O tu proveedor de correo
+  service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -48,7 +56,7 @@ const login = async (req, res) => {
   }
 };
 
-// ✅ REGISTRO CON CORREO SEGURO
+// ✅ REGISTER con contraseña aleatoria
 const register = async (req, res) => {
   const { nombre_completo, correo, nombre_rol } = req.body;
 
@@ -62,7 +70,7 @@ const register = async (req, res) => {
     const existingUser = await prisma.usuario.findUnique({ where: { correo } });
     if (existingUser) return res.status(400).json({ message: 'Correo ya registrado' });
 
-    const defaultPassword = '12345';
+    const defaultPassword = generarContrasenaAleatoria();
     const hashedPassword = await bcrypt.hash(defaultPassword, 10);
 
     const usuario = await prisma.usuario.create({
@@ -75,17 +83,25 @@ const register = async (req, res) => {
       }
     });
 
-    // Enviar correo separado para no romper el flujo si falla
     try {
       await transporter.sendMail({
-        from: process.env.EMAIL_USER,
+        from: `"Sistema SENA" <${process.env.EMAIL_USER}>`,
         to: correo,
         subject: 'Bienvenido al Sistema SENA',
-        text: `Hola ${nombre_completo}, tu contraseña temporal es: ${defaultPassword}. Por favor cámbiala al iniciar sesión.`
+        text: `Bienvenido estimado usuario, ${nombre_completo}
+
+        Tu cuenta ha sido creada exitosamente. Por favor, inicia sesión con las siguientes credenciales:
+
+        Usuario: ${correo}
+        Contraseña: ${defaultPassword}
+
+        Este correo es únicamente informativo y es de uso exclusivo del destinatario(a), puede contener información privilegiada y/o confidencial. Si no es usted el destinatario(a) deberá borrarlo inmediatamente. Queda notificado que el mal uso, divulgación no autorizada, alteración y/o  modificación malintencionada sobre este mensaje y sus anexos quedan estrictamente prohibidos y pueden ser legalmente sancionados. -El SENA  no asume ninguna responsabilidad por estas circunstancias-
+        
+        .`
       });
     } catch (emailError) {
       console.error('❌ Error al enviar correo:', emailError);
-      // El registro continúa aunque falle el correo
+    
     }
 
     res.status(201).json({
@@ -103,9 +119,50 @@ const register = async (req, res) => {
   }
 };
 
-// ✅ CAMBIAR CONTRASEÑA
+const recuperarContrasena = async (req, res) => {
+  const { correo } = req.body;
+
+  try {
+    const user = await prisma.usuario.findUnique({ where: { correo } });
+
+    if (!user) return res.status(404).json({ message: 'Correo no encontrado' });
+
+    const nuevaPassword = generarContrasenaAleatoria();
+    const hashedPassword = await bcrypt.hash(nuevaPassword, 10);
+
+    await prisma.usuario.update({
+      where: { id: user.id },
+      data: {
+        contrasena: hashedPassword,
+        cambiar_contrasena: true
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"Sistema SENA" <${process.env.EMAIL_USER}>`,
+      to: correo,
+      subject: 'Recuperación de contraseña - Sistema SENA',
+      text: `Estimado usuario, ${user.nombre_completo}
+
+      Hemos enviado una contraseña temporal para que puedas acceder a tu cuenta. Por favor, inicia sesión con la siguiente contraseña temporal y cámbiala inmediatamente:
+      
+      Usuario: ${correo}
+      Contraseña: ${nuevaPassword}
+      
+      Este correo es únicamente informativo y es de uso exclusivo del destinatario(a), puede contener información privilegiada y/o confidencial. Si no es usted el destinatario(a) deberá borrarlo inmediatamente. Queda notificado que el mal uso, divulgación no autorizada, alteración y/o  modificación malintencionada sobre este mensaje y sus anexos quedan estrictamente prohibidos y pueden ser legalmente sancionados. -El SENA  no asume ninguna responsabilidad por estas circunstancias-
+      .`
+    });
+
+    res.json({ message: 'Se envió una nueva contraseña al correo registrado.' });
+
+  } catch (error) {
+    console.error('❌ Error en recuperar contraseña:', error);
+    res.status(500).json({ message: 'Error al recuperar contraseña' });
+  }
+};
+
 const cambiarContrasena = async (req, res) => {
-  const { id } = req.user; // Este id lo obtiene verifyToken
+  const { id } = req.user;
   const { nuevaContrasena } = req.body;
 
   try {
@@ -127,4 +184,4 @@ const cambiarContrasena = async (req, res) => {
   }
 };
 
-module.exports = { login, register, cambiarContrasena };
+module.exports = { login, register, cambiarContrasena, recuperarContrasena };

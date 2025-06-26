@@ -114,12 +114,6 @@ const Register = () => {
           </button>
         </form>
 
-        <p className="text-sm text-center text-gray-600 mt-4">
-          ¿Ya tienes una cuenta?{" "}
-          <Link to="/" className="text-sena-verde hover:underline">
-            Iniciar sesión
-          </Link>
-        </p>
       </main>
     </div>
   );
