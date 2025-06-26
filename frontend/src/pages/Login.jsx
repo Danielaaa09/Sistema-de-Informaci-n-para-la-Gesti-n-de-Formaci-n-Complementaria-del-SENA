@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import senaLogo from '../assets/sena-logo.png';
 
 function Login() {
@@ -15,15 +15,13 @@ function Login() {
     try {
       const res = await axios.post('http://localhost:3000/api/auth/login', { correo, password });
 
-      // Guardar token
       localStorage.setItem('token', res.data.token);
 
-      // Verificar si debe cambiar contraseña
       if (res.data.cambiarContrasena) {
         setMensaje('🔒 Debes cambiar tu contraseña.');
-        setTimeout(() => navigate('/cambiar-contrasena'), 1000); // Redirige al formulario de cambio
+        setTimeout(() => navigate('/cambiar-contrasena'), 1000);
       } else {
-        setMensaje('✅ Redirigiendo al Dashboard...');
+        setMensaje('✅ Redirigiendo');
         setTimeout(() => navigate('/Dashboard'), 1000);
       }
 
@@ -41,7 +39,7 @@ function Login() {
         </h1>
       </header>
 
-      <main className="flex justify-center items-center min-h-[80vh] px-4">
+      <main className="flex flex-col justify-center items-center min-h-[80vh] px-4">
         <form
           onSubmit={handleSubmit}
           className="bg-white border border-gray-200 rounded-xl shadow p-8 space-y-6 w-full max-w-md"
@@ -79,9 +77,14 @@ function Login() {
             Iniciar sesión
           </button>
 
-          {mensaje && (
-            <p className="text-center text-sm mt-4">{mensaje}</p>
-          )}
+          {mensaje && <p className="text-center text-red-600">{mensaje}</p>}
+
+          <p className="text-sm text-center text-gray-600 mt-4">
+            ¿Olvidaste tu contraseña?{' '}
+            <Link to="/recuperar" className="text-green-700 hover:underline">
+              Recuperarla
+            </Link>
+          </p>
         </form>
       </main>
     </div>

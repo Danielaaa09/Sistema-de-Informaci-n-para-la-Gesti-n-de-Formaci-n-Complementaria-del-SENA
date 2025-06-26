@@ -1,25 +1,41 @@
-import React from "react"
-import { Link } from "react-router-dom"
-import senaLogo from "../assets/sena-logo.png"
+import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import senaLogo from "../assets/sena-logo.png";
 
 const fichasMock = [
   { programa: "Electricidad", codigo: "456789", fecha: "17 de junio de 2025", estado: "Activa" },
   { programa: "Contabilidad", codigo: "789012", fecha: "10 de junio de 2025", estado: "Cerrada" },
   { programa: "ADSO", codigo: "123456", fecha: "1 de junio de 2025", estado: "Activa" }
-]
+];
 
 const Dashboard = () => {
-  const totalFichas = fichasMock.length
-  const programas = [...new Set(fichasMock.map(f => f.programa))]
-  const ultimasFichas = [...fichasMock].slice(-3).reverse()
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // 🔐 Eliminar token al cerrar sesión
+    navigate('/'); // Redirigir al login
+  };
+
+  const totalFichas = fichasMock.length;
+  const programas = [...new Set(fichasMock.map(f => f.programa))];
+  const ultimasFichas = [...fichasMock].slice(-3).reverse();
 
   return (
     <div className="min-h-screen bg-white text-gray-800 font-sans">
-      <header className="bg-white border-b border-gray-200 shadow-sm py-4 px-6 flex items-center gap-4">
-        <img src={senaLogo} alt="Logo SENA" className="h-12 w-auto" />
-        <h1 className="text-2xl sm:text-3xl font-bold text-green-700">
-          Sistema de Gestión de Formación SENA
-        </h1>
+      <header className="bg-white border-b border-gray-200 shadow-sm py-4 px-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <img src={senaLogo} alt="Logo SENA" className="h-12 w-auto" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-700">
+            Sistema de Gestión de Formación SENA
+          </h1>
+        </div>
+
+        <button
+          onClick={handleLogout}
+          className="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition"
+        >
+          Cerrar sesión
+        </button>
       </header>
 
       <main className="px-6 py-8 max-w-screen-lg mx-auto">
@@ -82,13 +98,13 @@ const Dashboard = () => {
           <Link
             to="/Register"
             className="bg-gray-700 text-white px-4 py-2 rounded shadow hover:bg-gray-800 transition"
-            >
+          >
             Registrar usuario
           </Link>
         </section>
       </main>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
